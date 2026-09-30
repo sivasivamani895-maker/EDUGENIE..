@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGenie - Learning Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>EduGenie</h1>
+        <p>Google Gemini Powered Learning Assistant</p>
+    </header>
+
+    <main class="card">
+        <label for="task">Choose a task</label>
+        <select id="task">
+            <option value="qa">Ask Question</option>
+            <option value="explain">Explain Topic</option>
+            <option value="quiz">Generate Quiz</option>
+            <option value="summarize">Summarize</option>
+            <option value="recommend">Learning Path</option>
+        </select>
+
+        <label for="inputText">Enter your question, topic or text</label>
+        <textarea id="inputText" rows="10" placeholder="Type here..."></textarea>
+
+        <button onclick="runTask()">Submit</button>
+        <div id="status"></div>
+        <pre id="result"></pre>
+    </main>
+</div>
+
+<script>
+async function runTask() {
+    const task = document.getElementById("task").value;
+    const input = document.getElementById("inputText").value.trim();
+    const result = document.getElementById("result");
+    const status = document.getElementById("status");
+
+    if (!input) {
+        result.textContent = "Please enter some text.";
+        return;
+    }
+
+    status.textContent = "Thinking...";
+    result.textContent = "";
+
+    const endpoints = {
+        qa: "/qa",
+        explain: "/explain",
+        quiz: "/quiz",
+        summarize: "/summarize",
+        recommend: "/learn/recommendations"
+    };
+
+    const fieldNames = {
+        qa: "question",
+        explain: "topic",
+        quiz: "text",
+        summarize: "text",
+        recommend: "topic"
+    };
+
+    const form = new FormData();
+    form.append(fieldNames[task], input);
+
+    try {
+        const response = await fetch(endpoints[task], {
+            method: "POST",
+            body: form
+        });
+
+        const data = await response.json();
+        result.textContent = typeof data.result === "string"
+            ? data.result
+            : JSON.stringify(data.result, null, 2);
+    } catch (error) {
+        result.textContent = "Error: " + error.message;
+    } finally {
+        status.textContent = "";
+    }
+}
+</script>
+</body>
+</html>
