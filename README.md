@@ -64,4 +64,4 @@ POST /explain
 POST /quiz
 POST /summarize
 POST /learn/recommendations
-https://youtu.be/Jo96XcoVBKY?feature=shared
+https://drive.google.com/file/d/15bj8rhDv3X7WTVMiSEquVqz7vzJSKLTk/view?usp=drivesdk
